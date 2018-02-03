@@ -1,0 +1,52 @@
+/*
+  -----------
+    Generic
+  -----------
+*/
+.custom-container {
+  padding-left: 135px;
+  padding-right: 135px;
+}
+
+/*
+  -------------
+    Nav Menu
+  -------------
+*/
+.navbar-default {
+  height: 100px;
+  .logo {
+		padding-top: 40px;
+		margin-left: 0;
+	}
+  .navbar-nav {
+    li {
+      a {
+        padding: 40px 20px;
+        @include font-size(1.8);
+        color: $color__white;
+        &:hover {
+          color: $color__white;
+        }
+      }
+    }
+  }
+}
+
+/*
+  --------------
+    About Page
+  --------------
+*/
+.about-img-wrap {
+  height: 650px;
+}
+.about-container {
+  padding: 100px 235px 100px 435px;
+  h1 {
+    padding-bottom: 50px;
+  }
+  p{
+    padding-bottom: 20px;
+  }
+}

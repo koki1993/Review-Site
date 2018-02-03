@@ -1,0 +1,27 @@
+.navbar-default {
+	background-color: $color__black;
+	border: none;
+	border-radius: 0;
+	height: 80px;
+	margin-bottom: 0;
+	.logo {
+		padding-top: 30px;
+		margin-left: 15px;
+	}
+	.navbar-toggle {
+		border: none;
+		padding-top: 30px;
+		margin: 0 15px 0 0;
+		&:active,
+		&:focus {
+			background-color: $color__black;
+		}
+		span {
+			margin-bottom: 8px;
+		}
+		.icon-bar {
+			background-color: $color__white;
+			width: 34px;
+		}
+	}
+}

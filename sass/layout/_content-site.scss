@@ -1,0 +1,36 @@
+/*
+  -----------
+    Generic
+  -----------
+*/
+.hentry {
+  margin: 0;
+}
+/*
+  --------------
+    About Page
+  --------------
+*/
+.about-img-wrap {
+  height: 550px;
+}
+.about-container {
+  padding: 45px 15px 50px 15px;
+  h1 {
+    padding-bottom: 30px;
+  }
+  p{
+    padding-bottom: 20px;
+  }
+}
+
+/*
+  ----------
+    Footer
+  ----------
+*/
+.footer {
+  background-color: $color__black;
+  height: 400px;
+  color: $color__white;
+}
