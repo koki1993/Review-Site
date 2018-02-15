@@ -16,16 +16,28 @@
 	<footer id="colophon" class="site-footer">
 		<div class="site-info">
 			<div class="footer">
-				<div class="col-sm-3">
-
+				<div class="footer-content">
+					<div class="row">
+						<?php if( is_active_sidebar( 'quicklinks' ) ) : ?>
+							<div class="col-xs-6 col-sm-3">
+								<?php dynamic_sidebar( 'quicklinks' ); ?>
+							</div>
+						<?php endif; ?>
+						<?php if( is_active_sidebar( 'about' ) ) : ?>
+							<div class="col-xs-6 col-sm-4">
+								<?php dynamic_sidebar( 'about' ); ?>
+							</div>
+						<?php endif; ?>
+						<div class=" col-xs-12 col-sm-5">
+							<div class="newsletter">
+								<h2>Newsletter</h2>
+								<input type="text" name="Email" placeholder="Email" value="">
+								<button type="submit" name="button">></button>
+							</div>
+						</div>
+					</div>
+					<p class="copyright-text">&copy; <?php echo date('Y'); ?> Review Site</p>
 				</div>
-				<div class="col-sm-5">
-
-				</div>
-				<div class="col-sm-4">
-
-				</div>
-				<p class="copyright-text">&copy; <?php echo date('Y'); ?> Review Site</p>
 			</div>
 		</div><!-- .site-info -->
 	</footer><!-- #colophon -->

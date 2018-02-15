@@ -1,16 +1,25 @@
-.navbar-default {
+.main-navigation {
 	background-color: $color__black;
 	border: none;
 	border-radius: 0;
-	height: 80px;
 	margin-bottom: 0;
+	.navbar-collapse {
+		li {
+			a {
+				@include font-size(1.8);
+				color: $color__white;
+				font-weight: 700;
+			}
+
+		}
+	}
 	.logo {
-		padding-top: 30px;
+		padding-top: 25px;
 		margin-left: 15px;
 	}
 	.navbar-toggle {
 		border: none;
-		padding-top: 30px;
+		padding-top: 25px;
 		margin: 0 15px 0 0;
 		&:active,
 		&:focus {
@@ -23,5 +32,9 @@
 			background-color: $color__white;
 			width: 34px;
 		}
+	}
+	button {
+		height: auto;
+		width: auto;
 	}
 }

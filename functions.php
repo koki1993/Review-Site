@@ -45,6 +45,11 @@ if ( ! function_exists( 'review_site_setup' ) ) :
 		// This theme uses wp_nav_menu() in one location.
 		register_nav_menus( array(
 			'Primary Menu' => esc_html__( 'primary-menu', 'review-site' ),
+			'Movies Menu' => esc_html__( 'movies-menu', 'review-site' ),
+			'Books Menu' => esc_html__( 'books-menu', 'review-site' ),
+			'Games Menu' => esc_html__( 'games-menu', 'review-site' ),
+			'Blog Menu' => esc_html__( 'blog-menu', 'review-site' ),
+			'Quicklinks Menu' => esc_html__( 'quicklinks-menu', 'review-site' ),
 		) );
 
 		/*
@@ -129,10 +134,12 @@ add_action( 'widgets_init', 'review_site_widgets_init' );
 function review_site_scripts() {
 	//styles
 	wp_enqueue_style( 'bootstrap', get_template_directory_uri() . '/css/bootstrap.min.css', array(), '3.3.7', 'all' );
+	wp_enqueue_style( 'fontawesome', get_template_directory_uri() . '/css/fontawesome.min.css', array(), '', 'all' );
 	wp_enqueue_style( 'review-site-style', get_stylesheet_uri() );
 
 	//scripts
 	wp_enqueue_script( 'bootstrap', get_template_directory_uri() . '/js/bootstrap.min.js', array('jquery'), '3.3.7', true );
+	wp_enqueue_script( 'rating', get_template_directory_uri() . '/js/jquery.starrating.min.js', array('jquery'), '', true );
 
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
@@ -196,7 +203,7 @@ function movies_custom_post_type() {
 		'rewrite'			=> array( 'slug' => 'movies' ),
 		'capability_type'	=> 'post',
 		'hierarchical'		=> false,
-		'supports'			=> array( 'title', 'editor', 'excerpt', 'thumbnail', 'revisions' ),
+		'supports'			=> array( 'title', 'editor', 'excerpt', 'thumbnail', 'revisions', 'comments' ),
 		'menu_position'		=> 5,
 		'menu_icon'			=> 'dashicons-feedback',
 		'exclude_from_search'=> false
@@ -261,7 +268,7 @@ function books_custom_post_type() {
 		'rewrite'			=> array( 'slug' => 'books' ),
 		'capability_type'	=> 'post',
 		'hierarchical'		=> false,
-		'supports'			=> array( 'title', 'editor', 'excerpt', 'thumbnail', 'revisions' ),
+		'supports'			=> array( 'title', 'editor', 'excerpt', 'thumbnail', 'revisions', 'comments' ),
 		'menu_position'		=> 5,
 		'menu_icon'			=> 'dashicons-feedback',
 		'exclude_from_search'=> false
@@ -326,7 +333,7 @@ function games_custom_post_type() {
 		'rewrite'			=> array( 'slug' => 'games' ),
 		'capability_type'	=> 'post',
 		'hierarchical'		=> false,
-		'supports'			=> array( 'title', 'editor', 'excerpt', 'thumbnail', 'revisions' ),
+		'supports'			=> array( 'title', 'editor', 'excerpt', 'thumbnail', 'revisions', 'comments' ),
 		'menu_position'		=> 5,
 		'menu_icon'			=> 'dashicons-feedback',
 		'exclude_from_search'=> false
@@ -361,3 +368,197 @@ function games_custom_taxonomies() {
 	register_taxonomy( 'game_type', array( 'games' ), $games_args );
 }
 add_action( 'init', 'games_custom_taxonomies' );
+
+/**
+*
+*	Functions for editing comment form
+*
+*/
+
+//Comment Template Filters
+function ea_comment_textarea_placeholder( $args ) {
+	$args['comment_field']        = str_replace( 'textarea', 'textarea placeholder="comment..."', $args['comment_field'] );
+	return $args;
+}
+add_filter( 'comment_form_defaults', 'ea_comment_textarea_placeholder' );
+
+ // Comment Form Fields Placeholder
+function be_comment_form_fields( $fields ) {
+	$commenter = wp_get_current_commenter();
+	$req       = get_option( 'require_name_email' );
+	$label     = $req ? '*' : ' ' . __( '(optional)', 'text-domain' );
+	$aria_req  = $req ? "aria-required='true'" : '';
+
+	foreach( $fields as &$field ) {
+		$field = str_replace( 'id="author"', 'id="author" placeholder="name"', $field );
+		$field = str_replace( 'id="email"', 'id="email" placeholder="email"', $field );
+	}
+	return $fields;
+}
+add_filter( 'comment_form_default_fields', 'be_comment_form_fields' );
+
+// Add fields after default fields above the comment box, always visible
+add_action( 'comment_form_logged_in_after', 'additional_fields' );
+add_action( 'comment_form_after_fields', 'additional_fields' );
+
+function additional_fields () {
+	echo '<p class="comment-form-rating">
+	<span class="commentratingbox">';
+
+	for( $i=1; $i <= 10; $i++ )
+	echo '<span class="commentrating"><input type="radio" name="rating" id="rating" value="'. $i .'"/>'. $i .'</span>';
+
+	echo'</span></p>';
+
+}
+
+// Save the comment meta data along with comment
+add_action( 'comment_post', 'save_comment_meta_data' );
+function save_comment_meta_data( $comment_id ) {
+	if ( ( isset( $_POST['rating'] ) ) && ( $_POST['rating'] != '') )
+	$rating = wp_filter_nohtml_kses($_POST['rating']);
+	add_comment_meta( $comment_id, 'rating', $rating );
+}
+
+// Add the filter to check if the comment meta data has been filled or not
+add_filter( 'preprocess_comment', 'verify_comment_meta_data' );
+function verify_comment_meta_data( $commentdata ) {
+	if ( ! isset( $_POST['rating'] ) )
+	wp_die( __( 'Error: You did not add your rating. Hit the BACK button of your Web browser and resubmit your comment with rating.' ) );
+	return $commentdata;
+}
+
+add_filter( 'get_comment_date', 'meks_convert_to_time_ago', 10, 1 ); //override date display
+
+/* Callback function for post time and date filter hooks */
+function meks_convert_to_time_ago() {
+	printf( _x( '%s ago', '%s = human-readable time difference', 'your-text-domain' ), human_time_diff( get_comment_time( 'U' ), current_time( 'timestamp' ) ) );
+}
+
+function mytheme_comment($comment, $args, $depth) {
+    if ( 'div' === $args['style'] ) {
+        $tag       = 'div';
+        $add_below = 'comment';
+    } else {
+        $tag       = 'li';
+        $add_below = 'div-comment';
+    }?>
+    <<?php echo $tag; comment_class( empty( $args['has_children'] ) ? '' : 'parent' ); ?> id="comment-<?php comment_ID() ?>"><?php
+    if ( 'div' != $args['style'] ) { ?>
+        <div id="div-comment-<?php comment_ID() ?>" class="comment-body"><?php
+    } ?>
+        <div class="comment-author vcard">
+					<?php
+            if ( $args['avatar_size'] = 80 ) {
+                echo get_avatar( $comment, $args['avatar_size'] );
+            } ?>
+							<ul class="wrap"><?php
+						printf( __( '<li class="title">%s</li>' ), get_comment_author_link() ); ?>
+						<a class="time" href="<?php echo htmlspecialchars( get_comment_link( $comment->comment_ID ) ); ?>"><?php
+                /* translators: 1: date, 2: time */
+                printf(
+                    __('<li>%1$s</li>'),
+                    get_comment_date()
+                ); ?>
+            </a>
+					</ul>
+						<?php
+						?>
+        </div><?php
+        if ( $comment->comment_approved == '0' ) { ?>
+            <em class="comment-awaiting-moderation"><?php _e( 'Your comment is awaiting moderation.' ); ?></em><br/><?php
+        } ?>
+        <div class="comment-meta commentmetadata"><?php
+            edit_comment_link( __( '(Edit)' ), '  ', '' ); ?>
+        </div>
+
+				<?php $rating = get_comment_meta( get_comment_ID(), 'rating'); ?>
+				<div class="comment-text-wrap">
+					<p class="rating"><img src="<?php echo get_template_directory_uri() . '/img/star-small.png' ?>" alt=""> <?php echo $rating[0]; ?></p>
+					<p><?php comment_text();?></p>
+				</div>
+
+        <div class="reply"><?php
+                comment_reply_link(
+                    array_merge(
+                        $args,
+                        array(
+                            'add_below' => $add_below,
+                            'depth'     => $depth,
+                            'max_depth' => $args['max_depth']
+                        )
+                    )
+                ); ?>
+        </div><?php
+    if ( 'div' != $args['style'] ) : ?>
+        </div><?php
+    endif;
+}
+
+function wpbeginner_numeric_posts_nav() {
+
+    if( is_singular() )
+        return;
+
+    global $wp_query;
+
+    /** Stop execution if there's only 1 page */
+    if( $wp_query->max_num_pages <= 1 )
+        return;
+
+    $paged = get_query_var( 'paged' ) ? absint( get_query_var( 'paged' ) ) : 1;
+    $max   = intval( $wp_query->max_num_pages );
+
+    /** Add current page to the array */
+    if ( $paged >= 1 )
+        $links[] = $paged;
+
+    /** Add the pages around the current page to the array */
+    if ( $paged >= 3 ) {
+        $links[] = $paged - 1;
+        $links[] = $paged - 2;
+    }
+
+    if ( ( $paged + 2 ) <= $max ) {
+        $links[] = $paged + 2;
+        $links[] = $paged + 1;
+    }
+
+    echo '<div class="navigation"><ul>' . "\n";
+
+    /** Previous Post Link */
+    if ( get_previous_posts_link() )
+        printf( '<li class="previus">%s</li>' . "\n", get_previous_posts_link('<') );
+
+    /** Link to first page, plus ellipses if necessary */
+    if ( ! in_array( 1, $links ) ) {
+        $class = 1 == $paged ? ' class="active"' : '';
+
+        printf( '<li%s><a href="%s">%s</a></li>' . "\n", $class, esc_url( get_pagenum_link( 1 ) ), '1' );
+
+        if ( ! in_array( 2, $links ) )
+            echo '<li>…</li>';
+    }
+
+    /** Link to current page, plus 2 pages in either direction if necessary */
+    sort( $links );
+    foreach ( (array) $links as $link ) {
+        $class = $paged == $link ? ' class="active"' : '';
+        printf( '<li%s><a href="%s">%s</a></li>' . "\n", $class, esc_url( get_pagenum_link( $link ) ), $link );
+    }
+
+    /** Link to last page, plus ellipses if necessary */
+    if ( ! in_array( $max, $links ) ) {
+        if ( ! in_array( $max - 1, $links ) )
+            echo '<li>…</li>' . "\n";
+
+        $class = $paged == $max ? ' class="active"' : '';
+        printf( '<li%s><a href="%s">%s</a></li>' . "\n", $class, esc_url( get_pagenum_link( $max ) ), $max );
+    }
+
+    /** Next Post Link */
+    if ( get_next_posts_link() )
+        printf( '<li class="next">%s</li>' . "\n", get_next_posts_link('>') );
+
+    echo '</ul></div>' . "\n";
+}

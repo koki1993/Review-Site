@@ -1,5 +1,6 @@
 p {
 	@include font-size(1.8);
+	color: $color__gray;
 }
 
 dfn, cite, em, i {

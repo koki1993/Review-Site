@@ -16,6 +16,7 @@
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="profile" href="http://gmpg.org/xfn/11">
+	<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
 	<?php wp_head(); ?>
 </head>
@@ -27,7 +28,7 @@
 
 	<header id="masthead" class="site-header">
 		<nav class="main-navigation navbar navbar-default">
-		  <div class="custom-container">
+		  <div class="menu-container">
 		    <div class="navbar-header">
 		      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#primary-collapse" aria-expanded="false">
 						<span class="sr-only">Toggle navigation</span>

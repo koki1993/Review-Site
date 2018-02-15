@@ -4,21 +4,58 @@
   -----------
 */
 .custom-container {
-  padding-left: 135px;
-  padding-right: 135px;
+  width: 1070px;
+  margin: 0 auto;
+}
+//categories area
+.categories-navigation {
+  background-color: $color__white;
+  border: none;
+  ul {
+    padding: 0;
+    li {
+      padding-top: 10px;
+      width: 100%;
+      a {
+        padding: 10px 0 0 0;
+        color: $color__gray;
+        @include font-size(1.8);
+        &:hover {
+          text-decoration: none;
+          color: $color__yellow;
+        }
+      }
+    }
+  }
 }
 
+//comments template
+.comments-wrap {
+  .comment-form-comment textarea {
+    width: 370px;
+  }
+  .form-submit input {
+    width: 370px;
+  }
+  .comment-text-wrap {
+    margin: 20px 0 50px 95px;
+  }
+}
 /*
   -------------
     Nav Menu
   -------------
 */
-.navbar-default {
+.main-navigation {
   height: 100px;
+  .menu-container {
+    width: 1070px;
+    margin: 0 auto;
+  }
   .logo {
-		padding-top: 40px;
-		margin-left: 0;
-	}
+    padding-top: 40px;
+    margin-left: 0;
+  }
   .navbar-nav {
     li {
       a {
@@ -34,6 +71,124 @@
 }
 
 /*
+  -------------
+    Home Page
+  -------------
+*/
+.welcome-text-wrap {
+  height: 668px;
+  .welcome-text {
+    width: 1070px;
+    margin: 0 auto;
+    padding-top: 190px;
+    h1 {
+      margin-bottom: 30px;
+    }
+    p {
+      max-width: 570px;
+    }
+  }
+}
+.home-container {
+  width: 1070px;
+  margin: 0 auto;
+  .nav-wrap {
+    position: relative;
+    margin-bottom: 30px;
+    h2 {
+      float: left;
+      margin-bottom: 0;
+      position: absolute;
+      bottom: 0;
+      @include font-size(4.6);
+    }
+    button {
+      float: right;
+      width: 160px;
+      margin: 0;
+    }
+  }
+  .item-wrap {
+    margin-bottom: 100px;
+    .home-img-wrap {
+      margin-bottom: 20px;
+    }
+    .single-title {
+      float: left;
+      width: 65%;
+    }
+    .rating-wrap {
+      float: right;
+    }
+  }
+}
+
+/*
+  ------------
+    Archive
+  ------------
+*/
+.archive-container {
+  width: 1070px;
+  margin: 0 auto;
+  padding: 100px 0;
+  h1 {
+    margin-bottom: 100px;
+    text-align: center;
+  }
+  .item-wrap {
+    height: 550px;
+    .single-title-wrap {
+      margin-top: 10px;
+    }
+  }
+}
+
+/*
+  ----------------
+    Blog Archive
+  ----------------
+*/
+.blog-container {
+  width: 1070px;
+  margin: 0 auto;
+  padding: 100px 0;
+  h1 {
+    margin-bottom: 100px;
+  }
+  .item-wrap {
+    .item-img {
+      margin-bottom: 20px;
+    }
+    .post-date {
+      margin-bottom: 20px;
+    }
+    .post-title a {
+      text-decoration: none;
+    }
+    .single-content {
+      margin-bottom: 30px;
+    }
+  }
+}
+/*
+  ----------
+    Single
+  ----------
+*/
+.single-container {
+  width: 1070px;
+  margin: 0 auto;
+  padding: 100px 0;
+  h1 {
+    margin-bottom: 100px;
+  }
+  .rating-wrap {
+    text-align: right;
+  }
+}
+
+/*
   --------------
     About Page
   --------------
@@ -42,11 +197,39 @@
   height: 650px;
 }
 .about-container {
-  padding: 100px 235px 100px 435px;
+  width: 1070px;
+  padding: 100px 0;
+  margin: 0 auto;
   h1 {
     padding-bottom: 50px;
   }
   p{
     padding-bottom: 20px;
+  }
+}
+
+/*
+  ----------
+    Footer
+  ----------
+*/
+.footer {
+  .footer-content {
+    width: 1070px;
+    margin: 0 auto;
+  }
+  .newsletter {
+    position: relative;
+    h2 {
+      margin-bottom: 10px;
+    }
+    input {
+      width: 360px;
+      margin-right: 10px;
+    }
+    button {
+      position: absolute;
+      width: 50px;
+    }
   }
 }
